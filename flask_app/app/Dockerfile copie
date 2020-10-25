@@ -1,0 +1,19 @@
+FROM ubuntu:18.04
+
+
+LABEL Mac Thi
+
+
+RUN apt update -y \
+    && apt install -y python3-pip
+
+COPY . /flask_app
+
+WORKDIR /flask_app
+
+
+RUN pip3 install -r requirements.txt
+
+ENTRYPOINT ["python3"]
+
+CMD ["app.py"]

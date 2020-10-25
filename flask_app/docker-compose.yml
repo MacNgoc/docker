@@ -1,0 +1,54 @@
+version: "3"
+
+
+#NETWORK
+networks:
+    network-flask:
+        driver: bridge
+
+
+#VOLUME
+volumes:
+    dir-site:
+        driver_opts:
+            device: /Users/bnmac/Documents/Travail/docker/flask_app/app/templates
+            type: bind
+            o: bind
+
+
+
+#SERVICE
+services: 
+    app:
+        container_name: flask-product
+        build: 
+            dockerfile: Dockerfile
+            context: ./app
+        hostname: flask
+        restart: always
+        networks: 
+            - network-flask
+        volumes: 
+            - dir-site:/home/site/
+            
+        ports: 
+            - "5000:5000"
+        
+
+    db:
+        container_name: mysql-product
+        image: "mysql:latest"
+        command: --default-authentication-plugin=mysql_native_password
+        ports:
+            - "127.0.0.1:33061:3306"
+        restart: always
+        networks: 
+            - network-flask
+        volumes:
+            #- ./db:/var/lib/mysql 
+            #- ./my.cfn:/etc/mysql/my.cfn 
+            - ./db:/docker-entrypoint-initdb.d/:ro
+        environment: 
+            - MYSQL_ROOT_PASSWORD=Abc123az
+            - MYSQL_DATABASE=db_flask
+        
